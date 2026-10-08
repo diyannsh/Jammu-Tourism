@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#070709" />
+    <title>JAMMU EXPEDITION — Uncharted Terrain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Engine CDNs -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script type="module" crossorigin src="/Jammu-Tourism/assets/index-DgMV6gMF.js"></script>
+    <link rel="stylesheet" crossorigin href="/Jammu-Tourism/assets/index-Cb26F6I_.css">
+  </head>
+  <body>
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div class="grain"></div>
+    <div class="scanlines"></div>
+
+    <!-- The Global WebGL Canvas for Image Planes -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <main>
+      <section class="hero" id="top">
+        <!-- Restored Original Wireframe Canvas -->
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-wash"></div>
+        <div class="hero-grid"></div>
+
+        <header class="topbar">
+          <a class="brand" href="#top">
+            <span class="brand-mark"><span>J</span></span>
+            <span class="brand-name">JAMMU<br />EXPEDITION</span>
+          </a>
+          <div class="top-meta mono">
+            <span><i></i><span id="local-time">--:--:--</span> IST</span>
+            <span>32.7266° N &nbsp;74.8570° E</span>
+          </div>
+        </header>
+
+        <div class="hero-content">
+          <div class="eyebrow mono">Field notes / 32° north</div>
+          <!-- Removed kinetic-text here to protect the outline span -->
+          <h1 id="hero-title">Jammu<span class="outline">Expedition</span></h1>
+          <div class="hero-sub">
+            <p>
+              A living atlas to the sacred, the wild, and everything waiting
+              between. Find your way into the unknown.
+            </p>
+            <a class="hero-cta magnetic-btn" href="#routes"
+              >Enter the terrain <i data-lucide="arrow-down-right"></i
+            ></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-wrap routes" id="routes">
+        <div class="section-top reveal">
+          <div>
+            <div class="section-kicker mono">01 / Curated circuits</div>
+            <h2 class="section-title">
+              Choose your<br /><em>own altitude.</em>
+            </h2>
+          </div>
+        </div>
+
+        <div class="route-grid">
+          <article class="route-card spiritual reveal" data-circuit="01">
+            <!-- WebGL Tracking Node. Image MUST be in the public/ folder -->
+            <div class="webgl-image" data-src="./jammu-spiritual.jpg"></div>
+
+            <div class="card-inner">
+              <div class="card-top">
+                <span class="card-number mono">CIRCUIT 01 / 04</span>
+                <span class="card-tag mono">SPIRITUAL</span>
+              </div>
+              <div class="route-copy">
+                <div class="route-place mono">KATRA · TRIKUTA HILLS</div>
+                <h3 class="kinetic-text">The Spiritual Ascent</h3>
+              </div>
+            </div>
+            <button class="quick-add magnetic-btn mono" type="button">
+              <i data-lucide="plus"></i> Quick add
+            </button>
+          </article>
+
+          <article class="route-card pines reveal" data-circuit="02">
+            <div class="webgl-image" data-src="./jammu-pines.jpg"></div>
+            <div class="card-inner">
+              <div class="card-top">
+                <span class="card-number mono">CIRCUIT 02 / 04</span>
+                <span class="card-tag mono">ADVENTURE</span>
+              </div>
+              <div class="route-copy">
+                <div class="route-place mono">PATNITOP · SANASAR</div>
+                <h3 class="kinetic-text">Pines & Cloudline</h3>
+              </div>
+            </div>
+            <button class="quick-add magnetic-btn mono" type="button">
+              <i data-lucide="plus"></i> Quick add
+            </button>
+          </article>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>
