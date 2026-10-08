@@ -149,7 +149,7 @@ setTimeout(streamBootLog, 350);
 
 // 4. SYNTHESIZED TACTICAL AUDIO FEEDBACK
 let audioContext = null;
-let soundEnabled = false;
+let soundEnabled = true;
 
 function triggerAcousticBeep(frequency = 600, duration = 0.06) {
   if (!soundEnabled) return;
