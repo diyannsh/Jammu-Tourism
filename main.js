@@ -216,7 +216,7 @@ document.addEventListener("pointerover", (e) => {
   }
 });
 
-// 6. CARD 3D TILT WITH REAL-TIME GLARE
+// 6. CARD 3D TILT WITH REAL-TIME GLARE & TOGGLE LOGIC
 const selectedRoutes = [];
 document.querySelectorAll(".route-card").forEach((card) => {
   card.addEventListener("pointermove", (e) => {
@@ -233,19 +233,34 @@ document.querySelectorAll(".route-card").forEach((card) => {
   });
 
   const addButton = card.querySelector(".quick-add");
-  addButton.addEventListener("click", (e) => {
+  
+  // Using onclick prevents overlapping event listeners
+  addButton.onclick = (e) => {
     e.stopPropagation();
     const routeName = card.dataset.route;
-    if (!selectedRoutes.includes(routeName)) {
+    
+    // Check if route is already selected
+    const routeIndex = selectedRoutes.indexOf(routeName);
+    
+    if (routeIndex > -1) {
+      // It exists -> REMOVE IT
+      selectedRoutes.splice(routeIndex, 1);
+      addButton.classList.remove("added");
+      addButton.innerHTML = '<i data-lucide="plus"></i> Quick add to route';
+      notifyToast(`${routeName.toUpperCase()} REMOVED`);
+      triggerAcousticBeep(420, 0.08); // Lower pitch for removal
+    } else {
+      // It does not exist -> ADD IT
       selectedRoutes.push(routeName);
+      addButton.classList.add("added");
+      addButton.innerHTML = '<i data-lucide="check"></i> Added to route';
+      notifyToast(`${routeName.toUpperCase()} RECORDED`);
+      triggerAcousticBeep(880, 0.09); // High pitch for addition
     }
-    addButton.classList.add("added");
-    addButton.innerHTML = '<i data-lucide="check"></i> Added to route';
+    
     if (window.lucide) lucide.createIcons();
     renderItinerary();
-    notifyToast(`${routeName.toUpperCase()} RECORDED`);
-    triggerAcousticBeep(880, 0.09);
-  });
+  };
 });
 
 // 7. EXPEDITION CONFIGURATOR ENGINE
