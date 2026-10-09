@@ -61,3 +61,4 @@ body.cursor-active #cursor-ring { background: var(--paper); mix-blend-mode: diff
 .route-place { color: #c4c4c0; font-size: 9px; letter-spacing: 0.16em; margin-bottom: 10px; }
 .route-copy h3 { font-size: clamp(26px, 3vw, 45px); letter-spacing: -0.065em; line-height: 0.98; margin: 0; font-weight: 500; }
 .quick-add { position: absolute; right: 24px; bottom: 25px; z-index: 4; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(212, 175, 55, 0.65); background: rgba(7, 7, 9, 0.74); padding: 11px 12px; font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; pointer-events: auto; }
+

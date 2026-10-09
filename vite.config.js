@@ -1,11 +1,6 @@
 import { defineConfig } from 'vite';
+import glsl from 'vite-plugin-glsl';
 
 export default defineConfig({
-  // CRITICAL: This must match your GitHub repository name exactly
-  base: '/Jammu-Tourism/', 
-  
-  server: {
-    host: true, // Allows you to test the site on your phone via local Wi-Fi
-    open: true  // Automatically opens the browser on server start
-  }
+  plugins: [glsl()]
 });
