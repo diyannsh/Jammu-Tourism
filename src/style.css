@@ -1,5 +1,5 @@
 :root {
-  --void: #070709; --paper: #f2f1ed; --amber: #d4af37;
+  --void: #070709; --paper: #f2f1ed; --amber: #ffffff;
   --line: rgba(255, 255, 255, 0.11);
 }
 * { box-sizing: border-box; }

@@ -1,15 +1,13 @@
-import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { pane } from '../config.js';
 import { scroll } from '../core/Scroll.js';
+import { pane } from '../config.js';
 
-// Screen-space RGB shift shader
-const RGBShiftShader = {
+const MonochromeShiftShader = {
   uniforms: {
     tDiffuse: { value: null },
-    uAmount: { value: 0.003 }
+    uAmount: { value: 0.0 }
   },
   vertexShader: `
     varying vec2 vUv;
@@ -24,13 +22,13 @@ const RGBShiftShader = {
     varying vec2 vUv;
 
     void main() {
-      vec2 uv = vUv;
-      float r = texture2D(tDiffuse, uv + vec2(uAmount, 0.0)).r;
-      float g = texture2D(tDiffuse, uv).g;
-      float b = texture2D(tDiffuse, uv - vec2(uAmount, 0.0)).b;
-      float a = texture2D(tDiffuse, uv).a;
+      // Sample clean diffuse frame without RGB color separation
+      vec4 color = texture2D(tDiffuse, vUv);
 
-      gl_FragColor = vec4(r, g, b, a);
+      // Subtle monochrome luminance boost reacting to high velocity
+      color.rgb += vec3(uAmount * 0.4);
+
+      gl_FragColor = color;
     }
   `
 };
@@ -40,43 +38,25 @@ export default class PostProcessing {
     this.renderer = renderer;
     this.scene = scene;
     this.camera = camera;
-    this.baseAmount = 0.002;
 
-    this.setup();
-    this.setupDebug();
-  }
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
 
-  setup() {
-    // 1. Initialize composer with high-precision render target
-    const renderTarget = new THREE.WebGLRenderTarget(
-      window.innerWidth,
-      window.innerHeight,
-      {
-        samples: 2, // Antialiasing inside post-processing
-        type: THREE.HalfFloatType
-      }
-    );
-
-    this.composer = new EffectComposer(this.renderer, renderTarget);
-
-    // 2. Base render pass (draws our 3D scene)
-    this.renderPass = new RenderPass(this.scene, this.camera);
-    this.composer.addPass(this.renderPass);
-
-    // 3. Custom RGB shift pass
-    this.shiftPass = new ShaderPass(RGBShiftShader);
+    this.shiftPass = new ShaderPass(MonochromeShiftShader);
     this.shiftPass.renderToScreen = true;
     this.composer.addPass(this.shiftPass);
+
+    this.setupDebug();
   }
 
   setupDebug() {
     if (!pane) return;
     const folder = pane.addFolder({ title: 'Post-Processing' });
-    folder.addBinding(this, 'baseAmount', {
-      label: 'Base Shift',
+    folder.addBinding(this.shiftPass.uniforms.uAmount, 'value', {
       min: 0,
-      max: 0.03,
-      step: 0.001
+      max: 0.05,
+      step: 0.001,
+      label: 'Velocity Boost'
     });
   }
 
@@ -85,9 +65,9 @@ export default class PostProcessing {
   }
 
   render() {
-    // Dynamically increase chromatic aberration during rapid scroll
-    const velocityDistortion = Math.min(Math.abs(scroll.velocity) * 0.0005, 0.02);
-    this.shiftPass.uniforms.uAmount.value = this.baseAmount + velocityDistortion;
+    const targetAmount = Math.min(Math.abs(scroll.velocity) * 0.0003, 0.03);
+    this.shiftPass.uniforms.uAmount.value += 
+      (targetAmount - this.shiftPass.uniforms.uAmount.value) * 0.15;
 
     this.composer.render();
   }
