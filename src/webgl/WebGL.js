@@ -3,7 +3,13 @@ import { raf } from '../core/RAF.js';
 import { scroll } from '../core/Scroll.js';
 import PostProcessing from './PostProcessing.js';
 import MediaPlane from './MediaPlane.js';
-import heroImage from '../assets/hero.png';
+
+// 1. Import your images from src/assets/
+import heroImage from '../assets/hero.jpg';
+import katraImage from '../assets/katra.jpg';
+import patnitopImage from '../assets/patnitop.jpg';
+import jammuImage from '../assets/jammu.jpg';
+import bhaderwahImage from '../assets/bhaderwah.jpg';
 
 export default class WebGL {
   constructor() {
@@ -16,21 +22,21 @@ export default class WebGL {
   }
 
   setup() {
-    // 1. Canvas Injection
+    // Canvas Injection
     this.canvas = document.createElement('canvas');
     this.canvas.id = 'webgl-canvas';
     document.body.appendChild(this.canvas);
 
-    // 2. Scene
+    // Scene
     this.scene = new THREE.Scene();
 
-    // 3. Pixel-perfect Perspective Camera (1 unit = 1 CSS pixel)
+    // Pixel-perfect Perspective Camera
     const distance = 600;
     const fov = 2 * Math.atan((window.innerHeight / 2) / distance) * (180 / Math.PI);
     this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 3000);
     this.camera.position.z = distance;
 
-    // 4. High-Performance Renderer
+    // Renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       alpha: true,
@@ -40,24 +46,32 @@ export default class WebGL {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // 5. Post-Processing Pipeline
+    // Post-Processing Pipeline
     this.postProcessing = new PostProcessing({
       renderer: this.renderer,
       scene: this.scene,
       camera: this.camera
     });
 
-    // 6. Asset Dictionary Setup
+    // Helper to configure textures cleanly
     const loader = new THREE.TextureLoader();
-    const heroTexture = loader.load(heroImage);
-    heroTexture.generateMipmaps = false;
-    heroTexture.minFilter = THREE.LinearFilter;
-
-    this.textures = {
-      hero: heroTexture
+    const loadTex = (src) => {
+      const tex = loader.load(src);
+      tex.generateMipmaps = false;
+      tex.minFilter = THREE.LinearFilter;
+      return tex;
     };
 
-    // 7. Hero Section Media Plane
+    // 2. Map imported images to texture keys
+    this.textures = {
+      hero: loadTex(heroImage),
+      katra: loadTex(katraImage),
+      patnitop: loadTex(patnitopImage),
+      jammu: loadTex(jammuImage),
+      bhaderwah: loadTex(bhaderwahImage)
+    };
+
+    // 3. Attach Hero Plane
     const heroEl = document.querySelector('.hero');
     if (heroEl) {
       this.mediaPlanes.push(
@@ -69,11 +83,11 @@ export default class WebGL {
       );
     }
 
-    // 8. Route Cards Media Planes (resolving data-texture keys)
+    // 4. Attach Route Cards by reading data-texture
     const cardElements = document.querySelectorAll('.route-card');
     cardElements.forEach((cardEl) => {
-      const textureKey = cardEl.dataset.texture;
-      const assignedTexture = this.textures[textureKey] || null;
+      const key = cardEl.dataset.texture;
+      const assignedTexture = this.textures[key] || null;
 
       this.mediaPlanes.push(
         new MediaPlane({
@@ -106,10 +120,7 @@ export default class WebGL {
   }
 
   render() {
-    // Synchronize camera to Lenis smooth scroll
     this.camera.position.y = -scroll.y;
-
-    // Delegate render to post-processing
     this.postProcessing.render();
   }
 }

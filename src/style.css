@@ -46,19 +46,72 @@ body.cursor-active #cursor-ring { background: var(--paper); mix-blend-mode: diff
 
 /* Routes Section */
 .section-wrap { padding: 140px clamp(20px, 7vw, 104px); position: relative; }
-.routes { background: linear-gradient(180deg, #070709 0%, rgba(12, 13, 16, 0.4) 45%, #070709 100%); }
+.routes {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8rem 2rem 10rem;
+}
 .section-top { margin-bottom: 48px; }
 .section-kicker { color: var(--amber); font-size: 9px; letter-spacing: 0.2em; margin-bottom: 16px; }
 .section-title { margin: 0; font-size: clamp(38px, 6vw, 80px); line-height: 0.95; letter-spacing: -0.075em; font-weight: 500; }
 .section-title em { color: #77787d; font-style: normal; }
 
-.route-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 13px; }
-.route-card { position: relative; min-height: 390px; grid-column: span 6; border: 1px solid var(--line); transform-style: preserve-3d; isolation: isolate; }
-.card-inner { position: absolute; z-index: 3; inset: 0; padding: 25px 27px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
-.card-top { display: flex; justify-content: space-between; }
+.route-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  width: 100%;
+  margin-top: 3rem;
+}
+.route-card {
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem;
+  border: 1px solid var(--line);
+  background: transparent !important;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.card-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  pointer-events: none; /* Allows pointer events through to button/plane */
+}
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .card-number { font-size: 9px; color: rgba(255, 255, 255, 0.62); letter-spacing: 0.15em; }
 .card-tag { border: 1px solid rgba(255, 255, 255, 0.22); padding: 7px 9px; color: #e6e5e0; font-size: 8px; letter-spacing: 0.11em; background: rgba(5, 5, 5, 0.18); backdrop-filter: blur(8px); }
 .route-place { color: #c4c4c0; font-size: 9px; letter-spacing: 0.16em; margin-bottom: 10px; }
-.route-copy h3 { font-size: clamp(26px, 3vw, 45px); letter-spacing: -0.065em; line-height: 0.98; margin: 0; font-weight: 500; }
-.quick-add { position: absolute; right: 24px; bottom: 25px; z-index: 4; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(212, 175, 55, 0.65); background: rgba(7, 7, 9, 0.74); padding: 11px 12px; font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; pointer-events: auto; }
-
+.route-copy h3 {
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  margin-top: 0.5rem;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
+}
+.quick-add {
+  align-self: flex-end;
+  position: relative;
+  z-index: 3;
+}
+@media (max-width: 900px) {
+  .route-grid {
+    grid-template-columns: 1fr;
+  }
+  .route-card {
+    min-height: 420px;
+  }
+}
