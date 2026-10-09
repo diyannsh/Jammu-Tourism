@@ -8,14 +8,15 @@ import heroImage from '../assets/hero.png';
 export default class WebGL {
   constructor() {
     this.mediaPlanes = [];
+    this.textures = {};
     this.setup();
     this.addEvents();
-    
+
     raf.subscribe(this.render.bind(this));
   }
 
   setup() {
-    // 1. Canvas
+    // 1. Canvas Injection
     this.canvas = document.createElement('canvas');
     this.canvas.id = 'webgl-canvas';
     document.body.appendChild(this.canvas);
@@ -23,13 +24,13 @@ export default class WebGL {
     // 2. Scene
     this.scene = new THREE.Scene();
 
-    // 3. Pixel-perfect Camera
+    // 3. Pixel-perfect Perspective Camera (1 unit = 1 CSS pixel)
     const distance = 600;
     const fov = 2 * Math.atan((window.innerHeight / 2) / distance) * (180 / Math.PI);
     this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 3000);
     this.camera.position.z = distance;
 
-    // 4. Renderer
+    // 4. High-Performance Renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       alpha: true,
@@ -39,32 +40,47 @@ export default class WebGL {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // 5. Post-Processing
+    // 5. Post-Processing Pipeline
     this.postProcessing = new PostProcessing({
       renderer: this.renderer,
       scene: this.scene,
       camera: this.camera
     });
 
-    // 6. Textures & Media Planes
+    // 6. Asset Dictionary Setup
     const loader = new THREE.TextureLoader();
     const heroTexture = loader.load(heroImage);
     heroTexture.generateMipmaps = false;
     heroTexture.minFilter = THREE.LinearFilter;
 
-    // Hero plane
+    this.textures = {
+      hero: heroTexture
+    };
+
+    // 7. Hero Section Media Plane
     const heroEl = document.querySelector('.hero');
     if (heroEl) {
       this.mediaPlanes.push(
-        new MediaPlane({ element: heroEl, scene: this.scene, texture: heroTexture })
+        new MediaPlane({
+          element: heroEl,
+          scene: this.scene,
+          texture: this.textures.hero
+        })
       );
     }
 
-    // Route cards
+    // 8. Route Cards Media Planes (resolving data-texture keys)
     const cardElements = document.querySelectorAll('.route-card');
     cardElements.forEach((cardEl) => {
+      const textureKey = cardEl.dataset.texture;
+      const assignedTexture = this.textures[textureKey] || null;
+
       this.mediaPlanes.push(
-        new MediaPlane({ element: cardEl, scene: this.scene })
+        new MediaPlane({
+          element: cardEl,
+          scene: this.scene,
+          texture: assignedTexture
+        })
       );
     });
   }
@@ -90,10 +106,10 @@ export default class WebGL {
   }
 
   render() {
-    // Sync camera to Lenis scroll
+    // Synchronize camera to Lenis smooth scroll
     this.camera.position.y = -scroll.y;
 
-    // Render pass pipeline
+    // Delegate render to post-processing
     this.postProcessing.render();
   }
 }

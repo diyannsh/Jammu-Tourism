@@ -1,24 +1,28 @@
 import gsap from 'gsap';
 import { scroll } from './Scroll.js';
+import { sound } from './Audio.js';
 
 export default class Interaction {
   constructor() {
     this.initMagneticButtons();
+    this.initCardAudio();
     this.initNavigation();
   }
 
   initMagneticButtons() {
-    // Select all interactive buttons across the hero and route cards
+    // Only small interactive targets get physical magnetic movement
     const buttons = document.querySelectorAll('.hero-cta, .magnetic-btn, .quick-add');
 
     buttons.forEach((btn) => {
+      btn.addEventListener('mouseenter', () => {
+        sound.playHover();
+      });
+
       btn.addEventListener('mousemove', (e) => {
         const rect = btn.getBoundingClientRect();
-        // Calculate offset from button center
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
 
-        // Elastic magnetic pull
         gsap.to(btn, {
           x: x * 0.35,
           y: y * 0.35,
@@ -29,7 +33,6 @@ export default class Interaction {
       });
 
       btn.addEventListener('mouseleave', () => {
-        // Elastic snap back to origin
         gsap.to(btn, {
           x: 0,
           y: 0,
@@ -37,6 +40,16 @@ export default class Interaction {
           ease: 'elastic.out(1.1, 0.4)',
           overwrite: 'auto'
         });
+      });
+    });
+  }
+
+  initCardAudio() {
+    // Large cards trigger sound without moving their layout position
+    const cards = document.querySelectorAll('.route-card');
+    cards.forEach((card) => {
+      card.addEventListener('mouseenter', () => {
+        sound.playHover();
       });
     });
   }
@@ -50,7 +63,8 @@ export default class Interaction {
     enterBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
-      // Smoothly travel to the routes section with inertia
+      sound.playTransition();
+
       scroll.lenis.scrollTo(routesSection, {
         duration: 2.0,
         easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t))

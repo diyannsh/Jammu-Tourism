@@ -2,6 +2,7 @@ import './style.css';
 import { initConfig, config } from './config.js';
 import { raf } from './core/RAF.js';
 import { cursor } from './core/Cursor.js';
+import { sound } from './core/Audio.js';
 import { interaction } from './core/Interaction.js';
 import WebGL from './webgl/WebGL.js';
 
@@ -13,10 +14,10 @@ class App {
   init() {
     initConfig();
     
-    // Start global timeline
+    // Start global animation loop
     raf.start();
 
-    // WebGL pipeline
+    // Initialize WebGL pipeline
     this.webgl = new WebGL();
   }
 }
